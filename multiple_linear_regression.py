@@ -5,13 +5,13 @@ from sklearn.datasets import load_boston
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LinearRegression
 
-bh_data = load_boston()
+# bh_data = load_boston()
 
-print(bh_data.keys())
+# print(bh_data.keys())
 
-boston = pd.DataFrame(bh_data.data, columns=bh_data.feature_names)
+# boston = pd.DataFrame(bh_data.data, columns=bh_data.feature_names)
 
-print(bh_data.DESCR)
+# print(bh_data.DESCR)
 
 # boston['MEDV'] = bh_data.target
 
