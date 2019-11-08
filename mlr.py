@@ -27,25 +27,25 @@ execution_trace_data = {
   'execution_times': [5,7,2]
 }
 
-# transpose
-opcode_counts = [[execution_trace_data['opcode_counts'][j][i] for j in range(0, 3)] for i in range(0, 104)]
-x = pd.DataFrame(opcode_counts)
-y = pd.DataFrame(execution_trace_data['execution_times'])
+def mlr(ys, coeffs):
+    # transpose
+    opcode_counts = [[coeffs[j][i] for j in range(0, len(coeffs))] for i in range(0, 104)]
 
-
+    x = pd.DataFrame(opcode_counts)
+    y = pd.DataFrame(ys)
 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=9)
 
-lin_reg_mod = LinearRegression()
+    lin_reg_mod = LinearRegression()
 
-lin_reg_mod.fit(x,y)
+    lin_reg_mod.fit(x,y)
 
 # pred = lin_reg_mod.predict(x)
-import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
 
-test_set_rmse = (np.sqrt(mean_squared_error(y_test, pred)))
+    test_set_rmse = (np.sqrt(mean_squared_error(y_test, pred)))
 
-test_set_r2 = r2_score(y_test, pred)
+    test_set_r2 = r2_score(y_test, pred)
 
-print(test_set_rmse)
-print(test_set_r2)
+    print(test_set_rmse)
+    print(test_set_r2)
