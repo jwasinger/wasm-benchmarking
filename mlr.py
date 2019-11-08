@@ -29,19 +29,21 @@ execution_trace_data = {
 
 def mlr(ys, coeffs):
     # transpose
-    opcode_counts = [[coeffs[j][i] for j in range(0, len(coeffs))] for i in range(0, 104)]
+    # opcode_counts = [[coeffs[j][i] for j in range(0, len(coeffs))] for i in range(0, 104)]
 
-    x = pd.DataFrame(opcode_counts)
+    # x = pd.DataFrame(opcode_counts)
+    x = pd.DataFrame(coeffs)
     y = pd.DataFrame(ys)
 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=9)
 
     lin_reg_mod = LinearRegression()
 
+    import pdb; pdb.set_trace()
     lin_reg_mod.fit(x,y)
 
 # pred = lin_reg_mod.predict(x)
-    import pdb; pdb.set_trace()
+
 
     test_set_rmse = (np.sqrt(mean_squared_error(y_test, pred)))
 
