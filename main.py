@@ -73,6 +73,8 @@ def main():
 
     args = parser.parse_args()
 
+    dataset = None
+
     if args.cmd == 'benchmark':
         print("gathering benchmarks...")
         dataset = run_benchmarks(count_opcodes = args.count_opcodes)
@@ -80,6 +82,14 @@ def main():
             json.dump(dataset, f)
     elif args.cmd == 'analyse':
         # TODO do mlr here
+        dataset_file = args.file
+        if dataset_file == None:
+            raise Exception("--file option required for 'analyse' command")
+
+        with open('output/dataset.json', 'r') as f:
+            dataset = json.load(f)
+
+        import pdb; pdb.set_trace()
         print("ran analysis")
 
 if __name__ == "__main__":
