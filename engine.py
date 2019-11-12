@@ -1,11 +1,13 @@
 from subprocess import Popen, PIPE
 import os
 
-# TODO: pass engine input via pipes instead of the shell
+# TODO: pass engine input via pipes instead of the shell (they might become too long)
 # def make_temp():
 #    path = "./pipe"
 #    mode = 0o600
 #    os.mkfifo(path, mode)
+
+# TODO: use docker python api/daemon (I think it will reduce startup time between test cases)
 
 class InvokeEngine:
     @staticmethod
