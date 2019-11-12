@@ -1,0 +1,4 @@
+keccak_bench:
+  wasm: 'keccak.wasm'
+  inputs:
+  - ' 1111111111 '

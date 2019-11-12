@@ -2,69 +2,70 @@ from subprocess import Popen, PIPE
 import statistics
 import re
 import json
+import glob
+import sys
 from mlr import mlr
+from yaml import load
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
 
-# TODO: use docker python api/daemon (I think it will reduce startup time)
+from engine import InvokeEngine, EngineOutput
 
-def generate_inputs(num):
-    for i in range(10, num * 10 + 10,10):
-        yield "1" * i
+# TODO: use docker python api/daemon (I think it will reduce startup time between test cases)
 
-def invoke_keccak_docker(keccak_script, execution_input):
-    process = Popen(["bash", keccak_script, execution_input], stdout=PIPE)
-    (output, err) = process.communicate()
-    exit_code = process.wait()
-    return output.decode()
+NUM_SMOOTHING_RUNS = 1 # 10
 
-def bench(execution_input):
-    output = invoke_keccak_docker("run_keccak_bench.sh", execution_input)
-    execution_time = [line for line in output.split("\r\n") if "execution time: " in line][0][17:].strip(' microseconds')
-    execution_time = float(execution_time)
-    return execution_time
+engines = [
+    'wasmi'
+]
 
-def get_execution_trace_opcodes(execution_input):
-    output = invoke_keccak_docker("run_keccak_bench_instrumented.sh", execution_input)
-    instruction_counts = [line for line in output.split("\r\n") if "instruction counts: " in line][0][20:].split(', ')
-    return [int(x) for x in instruction_counts if x]
+def run_benchmark(engine, benchmark, wasm_input):
+    if engine == 'wasmi':
+        return EngineOutput.wasmi(InvokeEngine.wasmi(benchmark['wasm'], wasm_input))
 
-def generate_dataset():
-    # generate a number of random inputs
+def run_benchmarks():
+    engines = ['wasmi']
+    datasets = {}
 
-    inputs = generate_inputs(200)
-    dataset = {
-        'execution_times': [],
-        'opcode_counts': []
-    }
+    for test_file in glob.iglob("./benchmarks/*.yml"):
+        t = None
+        with open(test_file, 'r') as f:
+           t =  load(f, Loader=Loader)
 
-    for inp in inputs:
-        # get execution trace opcodes
-        opcode_counts = get_execution_trace_opcodes(inp)
+        datasets[list(t.keys())[0]] = {
+            'opcode_counts': [],
+            'times': []
+        }
 
-        times = []
-        # run the input several (hundred?) times gettng an averaged execution time
-        for i in range(0, 30):
-            times.append(bench(inp))
+        test_dataset = datasets[list(t.keys())[0]]
+        test_case = t[list(t.keys())[0]]
 
-        averaged_execution_time = int(round(statistics.mean(times)))
+        for inp in test_case['inputs']:
+            opcode_counts = EngineOutput.wasmi_instruction_counter(InvokeEngine.wasmi_instrumented(test_case['wasm'], inp))
+            test_dataset['opcode_counts'].append(opcode_counts)
 
-        # append the averaged execution time and execution trace opcodes to the dataset
-        dataset['execution_times'].append(averaged_execution_time)
-        dataset['opcode_counts'].append(opcode_counts)
+            # invoke all engines (?) do we want this
+            for engine in engines:
+                execution_times = []
 
-    return dataset
+                test_dataset[engine] = [] 
+
+                for i in range(0, NUM_SMOOTHING_RUNS):
+                    execution_times.append(run_benchmark(engine, test_case, inp))
+
+                test_dataset[engine].append(statistics.mean(execution_times))
+    return datasets
 
 def main():
-    dataset = generate_dataset()
-    with open('dataset.json', 'w') as f:
+
+    # TODO either generate or compute regression (on a pre-existing dataset) specified by cmd line flag
+    dataset = run_benchmarks()
+    with open('output/dataset.json', 'w') as f:
         json.dump(dataset, f)
 
-    # dataset = None
-    # with open('dataset.json', 'r') as f:
-    #    dataset = json.load(f)
-
-    import pdb; pdb.set_trace()
-
-    mlr(dataset['execution_times'], dataset['opcode_counts'])
+    # mlr(dataset['execution_times'], dataset['opcode_counts'])
 
 if __name__ == "__main__":
     # invoke_keccak_docker("run_keccak_bench_instrumented.sh", None)
