@@ -59,15 +59,17 @@ def run_benchmarks(count_opcodes=False):
 
                 test_dataset[engine].append(statistics.mean(execution_times))
 
-    import pdb; pdb.set_trace()
     return datasets
 
 def main():
     parser = argparse.ArgumentParser(description='benchmark wasm using various engines.  Perform analysis on the results')
-    parser.parse_args()
+    parser.add_argument('-c', '--count-opcodes', help="for each execution trace, get a list of the number of the occurances of each wasm opcode that was executed", action="store_true")
 
+    args = parser.parse_args()
+
+    # TODO add subcommands for "gather benchmarks", "do MLR analysis", etc.
     # TODO either generate or compute regression (on a pre-existing dataset) specified by cmd line flag
-    dataset = run_benchmarks()
+    dataset = run_benchmarks(count_opcodes = args.count_opcodes)
     with open('output/dataset.json', 'w') as f:
         json.dump(dataset, f)
 
