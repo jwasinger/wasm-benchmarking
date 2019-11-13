@@ -11,7 +11,7 @@ import os
 class InvokeEngine:
     @staticmethod
     def invoke_engine(engine_container, wasm_file, execution_input):
-        cmd_str = ["docker", "run", "-v", "{}/wasm/{}:/{}".format(os.getcwd(), wasm_file, wasm_file), "-t", engine_container, "--wasmfile", "/{}".format(wasm_file), "--input", execution_input]
+        cmd_str = ["docker", "run", "--rm", "-v", "{}/wasm/{}:/{}".format(os.getcwd(), wasm_file, wasm_file), "-t", engine_container, "--wasmfile", "/{}".format(wasm_file), "--input", execution_input]
         process = Popen(cmd_str, stdout = PIPE)
         (output, err) = process.communicate()
         exit_code = process.wait()
