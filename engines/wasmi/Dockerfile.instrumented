@@ -1,0 +1,9 @@
+FROM rust:1.39-stretch
+
+COPY . /wasmi
+
+RUN cd /wasmi && \
+  sed -i 's/wasmi = "0\.4\.2"/wasmi = { git = "https:\/\/github.com\/jwasinger\/wasmi", branch = "instruction-count", features = ["instruction_counting"] }/' /wasmi/Cargo.toml && \
+  cargo build -j2 --release
+
+ENTRYPOINT ["/wasmi/target/release/wasmi"]
