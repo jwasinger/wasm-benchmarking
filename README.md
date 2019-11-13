@@ -31,5 +31,5 @@ Wasmi - https://github.com/paritytech/wasmi
 ## Benchmark Wasm Format
 
 Wasm blobs used for benchmarking should conform to a standard environment interface.  Currently two host functions are exposed to the wasm runtime:
-- `input_data_copy`
-- `input_data_size`
+- `inputDataCopy(ptr: u32, offset: u32, length: u32)`: copy `length` bytes of input data passed from the host (starting at `offset`) into memory at `ptr`
+- `inputDataSize() -> u32`: return the size of input data passed from the host
