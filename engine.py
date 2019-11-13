@@ -8,7 +8,6 @@ import os
 #    os.mkfifo(path, mode)
 
 # TODO: use docker python api/daemon (I think it will reduce startup time between test cases)
-
 class InvokeEngine:
     @staticmethod
     def invoke_engine(engine_container, wasm_file, execution_input):

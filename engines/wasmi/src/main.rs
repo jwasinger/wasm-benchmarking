@@ -89,11 +89,11 @@ impl<'a> ModuleImportResolver for RuntimeModuleImportResolver {
         _signature: &Signature,
     ) -> Result<FuncRef, InterpreterError> {
         let func_ref = match field_name {
-            "callDataCopy" => FuncInstance::alloc_host(
+            "inputDataCopy" => FuncInstance::alloc_host(
                 Signature::new(&[ValueType::I32, ValueType::I32, ValueType::I32][..], None),
                 0,
             ),
-            "getCallDataSize" => FuncInstance::alloc_host(
+            "getInputDataSize" => FuncInstance::alloc_host(
                 Signature::new(&[][..], Some(ValueType::I32)),
                 1,
             ),

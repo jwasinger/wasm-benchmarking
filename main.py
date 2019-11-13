@@ -15,7 +15,7 @@ except ImportError:
 from engine import InvokeEngine, EngineOutput
 
 # TODO express this as configuration parameter instead of a constant
-NUM_SMOOTHING_RUNS = 1 # 10
+NUM_SMOOTHING_RUNS = 20
 
 engines = [
     'wasmi'
@@ -34,31 +34,45 @@ def run_benchmarks(count_opcodes=False):
         with open(test_file, 'r') as f:
            t =  load(f, Loader=Loader)
 
-        datasets[list(t.keys())[0]] = { }
+        test_name = list(t.keys())[0]
+        datasets[test_name] = { 'engines': {} }
 
         if count_opcodes:
-            datasets[list(t.keys())[0]]['opcode_counts'] = []
+            datasets[test_name]['opcode_counts'] = []
 
-        test_dataset = datasets[list(t.keys())[0]]
-        test_case = t[list(t.keys())[0]]
+        test_dataset = datasets[test_name]
+
+        test_case = t[test_name]
 
         for inp in test_case['inputs']:
             if count_opcodes:
                 opcode_counts = EngineOutput.wasmi_instruction_counter(InvokeEngine.wasmi_instrumented(test_case['wasm'], inp))
-                test_dataset['opcode_counts'].append(opcode_counts)
+                datasets[test_name]['opcode_counts'].append(opcode_counts)
 
             for engine in engines:
                 execution_times = []
 
-                if not engine in test_dataset:
-                    test_dataset[engine] = [] 
+                if not engine in test_dataset['engines']:
+                    test_dataset['engines'][engine] = [] 
 
                 for i in range(0, NUM_SMOOTHING_RUNS):
                     execution_times.append(run_benchmark(engine, test_case, inp))
 
-                test_dataset[engine].append(statistics.mean(execution_times))
+                test_dataset['engines'][engine].append(statistics.mean(execution_times))
 
     return datasets
+
+def mlr_analysis(dataset):
+    # TODO do MLR analysis for each engine separately
+    for test_case in dataset:
+        if not "opcode_counts" in dataset[test_case]:
+            print("dataset must be prepared with opcode counting enabled for regression analysis...")
+            return
+
+        for engine in dataset[test_case]['engines']:
+            xs = dataset[test_case]["opcode_counts"]
+            ys = dataset[test_case]['engines'][engine]
+            multi_linear_regression(ys, xs)
 
 def main():
     parser = argparse.ArgumentParser(description='benchmark wasm using various engines.  Perform analysis on the results')
@@ -81,16 +95,16 @@ def main():
         with open('output/dataset.json', 'w') as f:
             json.dump(dataset, f)
     elif args.cmd == 'analyse':
-        # TODO do mlr here
-        dataset_file = args.file
-        if dataset_file == None:
-            raise Exception("--file option required for 'analyse' command")
+        if args.file == None:
+            print("--file option required for 'analyse' command")
+            sys.exit(-1)
 
-        with open('output/dataset.json', 'r') as f:
+        dataset_file = args.file[0]
+
+        with open(dataset_file, 'r') as f:
             dataset = json.load(f)
 
-        import pdb; pdb.set_trace()
-        print("ran analysis")
+        mlr_analysis(dataset)
 
 if __name__ == "__main__":
     main()
