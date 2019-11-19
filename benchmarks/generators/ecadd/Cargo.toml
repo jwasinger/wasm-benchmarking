@@ -7,12 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# bn = "0.4.4"
-bn = { git = "https://github.com/paritytech/bn", default-features = false }
-rand = "0.5.6"
-rustc-hex = "2"
-rustc-serialize = { version = "0.3" }
 # ethereum-bn128 = { git = "https://github.com/ewasm/ethereum-bn128.rs", tag = "0.1.0" }
-# ethereum-bn128 = { path = "../../../../ethereum-bn128.rs" }
 ethereum-bn128 = { git = "https://github.com/ewasm/ethereum-bn128.rs" }
-hex = "0.3.1"
