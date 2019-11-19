@@ -45,7 +45,7 @@ name = "ecadd"
 version = "0.1.0"
 dependencies = [
  "bn 0.4.4 (git+https://github.com/paritytech/bn)",
- "ethereum-bn128 0.1.0 (git+https://github.com/ewasm/ethereum-bn128.rs?tag=0.1.0)",
+ "ethereum-bn128 0.1.0 (git+https://github.com/ewasm/ethereum-bn128.rs)",
  "hex 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.5.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-hex 2.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -67,7 +67,7 @@ dependencies = [
 [[package]]
 name = "ethereum-bn128"
 version = "0.1.0"
-source = "git+https://github.com/ewasm/ethereum-bn128.rs?tag=0.1.0#10968881fc5195f9c6d8f2960a8f7baae13fba3c"
+source = "git+https://github.com/ewasm/ethereum-bn128.rs#c46e4f8f53db2cd8ddec64e47175837462c49011"
 dependencies = [
  "bn 0.4.4 (git+https://github.com/paritytech/bn)",
  "ethereum-types 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -267,7 +267,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum crunchy 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "a2f4a431c5c9f662e1200b7c7f02c34e91361150e382089a8f2dec3ba680cbda"
 "checksum crunchy 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 "checksum ethbloom 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)" = "a6294da962646baa738414e8e718d1a1f0360a51d92de89ccbf91870418f5360"
-"checksum ethereum-bn128 0.1.0 (git+https://github.com/ewasm/ethereum-bn128.rs?tag=0.1.0)" = "<none>"
+"checksum ethereum-bn128 0.1.0 (git+https://github.com/ewasm/ethereum-bn128.rs)" = "<none>"
 "checksum ethereum-types 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "9c48729b8aea8aedb12cf4cb2e5cef439fdfe2dda4a89e47eeebd15778ef53b6"
 "checksum ethereum-types-serialize 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1873d77b32bc1891a79dad925f2acbc318ee942b38b9110f9dbc5fbeffcea350"
 "checksum fixed-hash 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)" = "7afe6ce860afb14422711595a7b26ada9ed7de2f43c0b2ab79d09ee196287273"
